@@ -1,0 +1,14 @@
+[
+    {
+        "ParameterKey": "EnvironmentName",
+        "ParameterValue": "Capstone"
+    },
+    {
+        "ParameterKey": "EKSClusterName",
+        "ParameterValue": "EKS-CAPSTONE"
+    },
+    {
+        "ParameterKey": "K8sVersion",
+        "ParameterValue": "1.16"
+    }
+]
