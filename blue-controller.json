@@ -23,6 +23,7 @@
                {
                   "name":"blue",
                   "image":"ravi8636/blueimage",
+                  "imagePullPolicy":"Never",
                   "ports":[
                      {
                         "name":"http-server",
