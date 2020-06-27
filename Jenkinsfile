@@ -30,7 +30,7 @@ dockerImage = ''
 			steps {
 				withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){
 					sh '''
-						docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+						docker.withRegistry( '', registryCredential )
 						docker push ravi8636/cloudcapstone:$BUILD_ID
 					'''
 				}
