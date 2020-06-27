@@ -46,27 +46,27 @@ pipeline {
 
         stage('Blue deploy') {
 			steps {
-				withAWS(region:'us-west-2', credentials:'aws-esk') {
+				withAWS(region:'us-west-2', credentials:'aws-static') {
 					sh '''
-						kubectl apply -f ./blue-controller.json
+						~/kubectl apply -f ./blue-controller.json
 					'''
 				}
 			}
 		}
         stage('Green deploy') {
 			steps {
-				withAWS(region:'us-west-2', credentials:'aws-esk') {
+				withAWS(region:'us-west-2', credentials:'aws-static') {
 					sh '''
-						kubectl apply -f ./green-controller.json
+						~/kubectl apply -f ./green-controller.json
 					'''
 				}
 			}
 		}
         stage('Load balancer for redirection to blue') {
 			steps {
-				withAWS(region:'us-west-2', credentials:'aws-esk') {
+				withAWS(region:'us-west-2', credentials:'aws-static') {
 					sh '''
-						kubectl apply -f ./green-blue-service.json
+						~/kubectl apply -f ./green-blue-service.json
 					'''
 				}
 			}
@@ -78,9 +78,9 @@ pipeline {
         }
        stage('Load balancer for redirection to green') {
 			steps {
-				withAWS(region:'us-west-2', credentials:'aws-esk') {
+				withAWS(region:'us-west-2', credentials:'aws-static') {
 					sh '''
-						kubectl apply -f ./blue-green-service.json
+						~/kubectl apply -f ./blue-green-service.json
 					'''
 				}
 			}
