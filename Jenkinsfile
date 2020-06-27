@@ -3,7 +3,9 @@ pipeline {
 	stages {
 		stage('Lint HTML') {
 			steps {
-				sh 'tidy -q -e index.html'
+				sh '''
+                 cd blue/ 
+                 tidy -q -e index.html'
 			}
 		}
 		
