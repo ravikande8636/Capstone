@@ -5,7 +5,8 @@ pipeline {
 			steps {
 				sh '''
                  cd blue/ 
-                 tidy -q -e index.html'
+                 tidy -q -e index.html
+                 '''
 			}
 		}
 		
