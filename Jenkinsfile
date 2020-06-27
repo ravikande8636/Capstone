@@ -37,6 +37,7 @@ pipeline {
 				withAWS(region:'us-west-2', credentials:'aws-static') {
 					sh '''
 					    aws eks --region us-west-2 update-kubeconfig --name EKS-CAPSTONE
+						kubectl version --short --client
 						kubectl config use-context arn:aws:eks:us-west-2:556449739581:cluster/EKS-CAPSTONE
 					'''
 				}
