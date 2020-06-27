@@ -1,4 +1,9 @@
 pipeline {
+    environment {
+    registry = "ravi8636/cloudcapstone"
+    registryCredential = 'dockerhub'
+    dockerImage = ''
+  }
 	agent any
 	stages {
 		stage('Lint HTML') {
@@ -15,21 +20,20 @@ pipeline {
 				withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){
 					sh '''
                      cd blue/
-						docker build -t ravi8636/cloudcapstone:$BUILD_ID .
+						dockerImage = docker build -t ravi8636/cloudcapstone:$BUILD_ID .
 					'''
 				}
 			}
 		}
 
 		stage('Push Image To Dockerhub') {
-			steps {
-				withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){
-					sh '''
-                        docker login
-						docker push ravi8636/cloudcapstone:$BUILD_ID
-					'''
-				}
-			}
+			steps{
+         script {
+            docker.withRegistry( '', registryCredential ) {
+            dockerImage.push()
+          }
+        }
+      }
 		}
 
 		stage('Set current kubectl context') {
