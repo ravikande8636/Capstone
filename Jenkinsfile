@@ -1,4 +1,9 @@
 pipeline {
+    environment {
+registry = "ravi8636/capstone"
+registryCredential = 'dockerhub'
+dockerImage = ''
+    }
 	agent any
 	stages {
 		stage('Lint HTML') {
