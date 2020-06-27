@@ -1,9 +1,4 @@
 pipeline {
-    environment {
-registry = "ravi8636/capstone"
-registryCredential = 'dockerhub'
-dockerImage = ''
-    }
 	agent any
 	stages {
 		stage('Lint HTML') {
@@ -30,7 +25,6 @@ dockerImage = ''
 			steps {
 				withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){
 					sh '''
-						docker.withRegistry( '', registryCredential )
 						docker push ravi8636/cloudcapstone:$BUILD_ID
 					'''
 				}
