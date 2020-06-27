@@ -16,14 +16,11 @@ pipeline {
 		}
 		
 		stage('Build Docker Image') {
-			steps {
-				withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){
-					sh '''
-                     cd blue/
-						dockerImage = docker build -t ravi8636/cloudcapstone:$BUILD_ID .
-					'''
-				}
-			}
+			steps{
+        script {
+          dockerImage = docker.build registry + ":$BUILD_NUMBER"
+        }
+      }
 		}
 
 		stage('Push Image To Dockerhub') {
