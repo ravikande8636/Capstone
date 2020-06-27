@@ -16,7 +16,7 @@ Parameters:
         Type: String 
     
 Resources:
-  eksClusterRole:
+  EksClusterRole:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
@@ -46,10 +46,78 @@ Resources:
       Version: !Ref K8sVersion
       RoleArn: 
        Fn::GetAtt:
+        - EksClusterRole
         - Arn
       ResourcesVpcConfig:
-        SecurityGroupIds:
-          - sg-6979fe18
+        SecurityGroupIds: [!Ref 'ControlplaneSG']
         SubnetIds:
           - Fn::ImportValue: !Sub "PUB1-SN-${EnvironmentName}"
           - Fn::ImportValue: !Sub "PUB2-SN-${EnvironmentName}"
+  EKSNodeInstanceRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+              - ec2.amazonaws.com
+            Action:
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+        - !Sub "arn:${AWS::Partition}:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+        - !Sub "arn:${AWS::Partition}:iam::aws:policy/AmazonEKS_CNI_Policy"
+        - !Sub "arn:${AWS::Partition}:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+      Path: /
+  EKSNodegroup:
+    Type: 'AWS::EKS::Nodegroup'
+    Properties:
+      ClusterName: !Ref EKSClusterName
+      NodeRole: 
+       Fn::GetAtt:
+        - EKSNodeInstanceRole
+        - Arn
+      ScalingConfig:
+        MinSize: 1
+        DesiredSize: 2
+        MaxSize: 2
+      Labels:
+       app: Cap-k8s
+       project: Capstone
+      Subnets:
+        - Fn::ImportValue: !Sub "PUB1-SN-${EnvironmentName}"
+        - Fn::ImportValue: !Sub "PUB2-SN-${EnvironmentName}"
+    DependsOn: myCluster
+
+Outputs:
+  ClusterRoleArn:
+    Description: The cluster role that Amazon EKS will use to create AWS resources
+      for Kubernetes clusters
+    Value:
+      Fn::GetAtt:
+      - EksClusterRole
+      - Arn
+    Export:
+      Name:
+        Fn::Sub: "${EnvironmentName}-ClusterRoleArn"
+  NodeInstanceRole:
+    Description: The worker node instance role
+    Value:
+      Fn::GetAtt:
+      - EKSNodeInstanceRole
+      - Arn
+    Export:
+      Name:
+        Fn::Sub: "${EnvironmentName}-NodeInstanceRoleArn"
+  SecurityGroups:
+    Description: Security group for the cluster control plane communication with worker
+      nodes
+    Value:
+      Fn::Join:
+      - ","
+      - - Ref: ControlplaneSG
+    Export:
+      Name:
+        Fn::Sub: "${EnvironmentName}-ControlPlaneSecurityGroupId"
+   
