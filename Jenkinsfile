@@ -15,7 +15,7 @@ pipeline {
 				withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){
 					sh '''
                         cd blue/
-						docker build -t blueimage:$BUILD_ID .
+						docker build -t ravi8636/blueimage:$BUILD_ID .
 					'''
 				}
 			}
