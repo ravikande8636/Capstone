@@ -14,6 +14,7 @@ pipeline {
 			steps {
 				withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){
 					sh '''
+                        cd blue/
 						docker build -t ravi8636/cloudcapstone:$BUILD_ID .
 					'''
 				}
