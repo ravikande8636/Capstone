@@ -18,6 +18,7 @@ pipeline {
 		stage('Build Docker Image') {
 			steps{
         script {
+          cd blue/
           dockerImage = docker.build registry + ":$BUILD_NUMBER"
         }
       }
@@ -26,6 +27,7 @@ pipeline {
 		stage('Push Image To Dockerhub') {
 			steps{
          script {
+             
             docker.withRegistry( '', registryCredential ) {
             dockerImage.push()
           }
