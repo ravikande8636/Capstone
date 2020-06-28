@@ -15,7 +15,7 @@ pipeline {
 				withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){
 					sh '''
                         cd blue/
-						docker build -t ravi8636/cloudcapstone:$BUILD_ID .
+						docker build -t ravi8636/blueimage:$BUILD_ID .
 					'''
 				}
 			}
@@ -26,7 +26,7 @@ pipeline {
 				withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){
 					sh '''
 						docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-						docker push ravi8636/cloudcapstone:$BUILD_ID
+						docker push ravi8636/blueimage:$BUILD_ID
 					'''
 				}
 			}
@@ -37,7 +37,8 @@ pipeline {
 				withAWS(region:'us-west-2', credentials:'aws-static') {
 					sh '''
 					    aws eks --region us-west-2 update-kubeconfig --name EKS-CAPSTONE
-						kubectl config use-context arn:aws:eks:us-west-2:556449739581:cluster/EKS-CAPSTONE
+						~/kubectl version --short --client
+						~/kubectl config use-context arn:aws:eks:us-west-2:556449739581:cluster/EKS-CAPSTONE
 					'''
 				}
 			}
@@ -45,27 +46,27 @@ pipeline {
 
         stage('Blue deploy') {
 			steps {
-				withAWS(region:'us-west-2', credentials:'aws-esk') {
+				withAWS(region:'us-west-2', credentials:'aws-static') {
 					sh '''
-						kubectl apply -f ./blue-controller.json
+						~/kubectl apply -f ./blue-controller.json
 					'''
 				}
 			}
 		}
         stage('Green deploy') {
 			steps {
-				withAWS(region:'us-west-2', credentials:'aws-esk') {
+				withAWS(region:'us-west-2', credentials:'aws-static') {
 					sh '''
-						kubectl apply -f ./green-controller.json
+						~/kubectl apply -f ./green-controller.json
 					'''
 				}
 			}
 		}
         stage('Load balancer for redirection to blue') {
 			steps {
-				withAWS(region:'us-west-2', credentials:'aws-esk') {
+				withAWS(region:'us-west-2', credentials:'aws-static') {
 					sh '''
-						kubectl apply -f ./green-blue-service.json
+						~/kubectl apply -f ./green-blue-service.json
 					'''
 				}
 			}
@@ -77,9 +78,9 @@ pipeline {
         }
        stage('Load balancer for redirection to green') {
 			steps {
-				withAWS(region:'us-west-2', credentials:'aws-esk') {
+				withAWS(region:'us-west-2', credentials:'aws-static') {
 					sh '''
-						kubectl apply -f ./blue-green-service.json
+						~/kubectl apply -f ./blue-green-service.json
 					'''
 				}
 			}
