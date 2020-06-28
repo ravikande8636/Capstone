@@ -6,6 +6,7 @@ pipeline {
 				sh '''
                  cd blue/ 
                  tidy -q -e index.html
+				 cd ..
 				 cd green/ 
                  tidy -q -e index.html
                  '''
@@ -18,6 +19,7 @@ pipeline {
 					sh '''
                         cd blue/
 						docker build -t ravi8636/blueimage:$BUILD_ID .
+						cd ..
 						cd green/
 						docker build -t ravi8636/greenimage:$BUILD_ID .
 					'''
