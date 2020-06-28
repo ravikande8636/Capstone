@@ -22,7 +22,7 @@
             "containers":[
                {
                   "name":"blue",
-                  "image":"ravi8636/blueimage",
+                  "image":"ravi8636/blueimage:latest",
                   "ports":[
                      {
                         "name":"http-server",
