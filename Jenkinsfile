@@ -18,8 +18,11 @@ pipeline {
 					sh '''
                         cd blue/
 						docker build -t ravi8636/blueimage:$BUILD_ID .
+<<<<<<< HEAD
 						cd green/
 						docker build -t ravi8636/greenimage:$BUILD_ID .
+=======
+>>>>>>> master
 					'''
 				}
 			}
@@ -31,7 +34,10 @@ pipeline {
 					sh '''
 						docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
 						docker push ravi8636/blueimage:$BUILD_ID
+<<<<<<< HEAD
 						docker push ravi8636/greenimage:$BUILD_ID
+=======
+>>>>>>> master
 					'''
 				}
 			}
